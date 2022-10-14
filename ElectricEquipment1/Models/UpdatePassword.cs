@@ -10,7 +10,5 @@ namespace ElectronicEquipment.Models
         public string Password { get; set; }
         [Required(ErrorMessage ="Please Enter New Password")]
         public string NewPassword { get; set; }
-        [Required(ErrorMessage ="Please Enter Confirm Password")]
-        public string ConfirmPassword { get; set;}
     }
 }
