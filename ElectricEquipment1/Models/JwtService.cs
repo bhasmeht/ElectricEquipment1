@@ -21,21 +21,28 @@ namespace ElectronicEquipment.Models
         }
         public String GenerateToken(String id, String username, String active)
         {
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(this.SecretKey));
-            var signature = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
-            var payload = new[]
+            try
             {
-               new Claim("id",id),
-               new Claim("username",username),
-               new Claim("active",active),
-            };
-            var jwtToken = new JwtSecurityToken(
-                issuer:"localhost",
-                audience:"localhost",
-                claims:payload,
-                expires:DateTime.Now.AddMinutes(TokenDuration),
-                signingCredentials:signature);
-            return new JwtSecurityTokenHandler().WriteToken(jwtToken);
+                var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(this.SecretKey));
+                var signature = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+                var payload = new[]
+                {
+                  new Claim("id",id),
+                  new Claim("username",username),
+                  new Claim("active",active),
+                };
+                var jwtToken = new JwtSecurityToken(
+                    issuer: "localhost",
+                    audience: "localhost",
+                    claims: payload,
+                    expires: DateTime.Now.AddMinutes(TokenDuration),
+                    signingCredentials: signature);
+                return new JwtSecurityTokenHandler().WriteToken(jwtToken);
+            }
+            catch (Exception)
+            {
+                return null;
+            }
         }
     }
 }

@@ -26,49 +26,77 @@ namespace ElectronicEquipment.Controllers
         [HttpGet("getEquipmentCategoryByGroupId/{id}")]
         public IActionResult GetequipmentGroupbyId(int id)
         {
-            var equipmentCategoryList = _context.EquipmentGroups.Where(u => u.EquipmentCategoryId == id)
-                .Select(a => new { a.EquipmentGroupId, a.EquipmentGroupName });
-            return Ok(equipmentCategoryList);
+            try
+            {
+                var equipmentCategoryList = _context.EquipmentGroups.Where(u => u.EquipmentCategoryId == id)
+                                .Select(a => new { a.EquipmentGroupId, a.EquipmentGroupName });
+                return Ok(equipmentCategoryList);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpPost("addEquipmentGroup")]
         public IActionResult Add(EquipmentGroup equipmentGroup)
         {
-            if (_context.EquipmentGroups.Where(u => u.EquipmentGroupName == equipmentGroup.EquipmentGroupName).FirstOrDefault() != null)
+            try
             {
-                return Ok("Exist");
+                if (_context.EquipmentGroups.Where(u => u.EquipmentGroupName == equipmentGroup.EquipmentGroupName).FirstOrDefault() != null)
+                {
+                    return Ok("Exist");
+                }
+                _context.EquipmentGroups.Add(equipmentGroup);
+                _context.SaveChanges();
+                return Ok("Success");
             }
-            _context.EquipmentGroups.Add(equipmentGroup);
-            _context.SaveChanges();
-            return Ok("Success");
+            catch(Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpPut("updateEquipmentGroup")]
         public IActionResult UpdateEquipmentCategory(EquipmentGroup equipmentGroup)
         {
-            var equipmentGroups = _context.EquipmentGroups.Where(u => u.EquipmentGroupId == equipmentGroup.EquipmentGroupId).FirstOrDefault();
-            if (equipmentGroups == null)
+            try
             {
-                return Ok("NotAvailable");
+                var equipmentGroups = _context.EquipmentGroups.Where(u => u.EquipmentGroupId == equipmentGroup.EquipmentGroupId).FirstOrDefault();
+                if (equipmentGroups == null)
+                {
+                    return Ok("NotAvailable");
+                }
+                equipmentGroups.EquipmentGroupName = equipmentGroup.EquipmentGroupName;
+                equipmentGroups.EquipmentCategoryId = equipmentGroup.EquipmentCategoryId;
+                _context.Update(equipmentGroups);
+                _context.SaveChanges();
+                return Ok("Success");
             }
-            equipmentGroups.EquipmentGroupName = equipmentGroup.EquipmentGroupName;
-            equipmentGroups.EquipmentCategoryId = equipmentGroup.EquipmentCategoryId;
-            _context.Update(equipmentGroups);
-            _context.SaveChanges();
-            return Ok("Success");
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpDelete("deleteEquipmentGroup/{id}")]
         public IActionResult DeleteEquipmentGroup(int id)
         {
-            var equipmentGroups = _context.EquipmentGroups.Where(u => u.EquipmentGroupId == id).FirstOrDefault();
-            if (equipmentGroups == null)
+            try
             {
-                return Ok("NotAvailable");
+                var equipmentGroups = _context.EquipmentGroups.Where(u => u.EquipmentGroupId == id).FirstOrDefault();
+                if (equipmentGroups == null)
+                {
+                    return Ok("NotAvailable");
+                }
+                _context.EquipmentGroups.Remove(equipmentGroups);
+                _context.SaveChanges();
+                return Ok("Success");
             }
-            _context.EquipmentGroups.Remove(equipmentGroups);
-            _context.SaveChanges();
-            return Ok("Success");
+            catch(Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
     }
 }

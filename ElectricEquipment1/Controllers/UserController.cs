@@ -27,44 +27,62 @@ namespace ElectronicEquipment.Controllers
         [HttpPost("addUser")]
         public IActionResult Add(User user)
         {
-            if (_context.Users.Where(u => u.UserName == user.UserName).FirstOrDefault() != null)
+            try
             {
-                return Ok("Exist");
+                if (_context.Users.Where(u => u.UserName == user.UserName).FirstOrDefault() != null)
+                {
+                    return Ok("Exist");
+                }
+                var userToken = new JwtService(_configuration).GenerateToken(user.UserId.ToString(), user.UserName, user.Active.ToString());
+                _context.Users.Add(user);
+                _context.SaveChanges();
+                return Ok(userToken);
             }
-            var userToken = new JwtService(_configuration).GenerateToken(user.UserId.ToString(), user.UserName, user.Active.ToString());
-            _context.Users.Add(user);
-            _context.SaveChanges();
-            return Ok(userToken);
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
         [AllowAnonymous]
         [HttpPost("loginUser")]
-        public IActionResult Login(Login login)
+        public IActionResult Login(User login)
         {
-            var user = _context.Users.Where(u => u.UserName == login.UserName && u.Password == login.Password).FirstOrDefault();
-            if (user != null)
+            try
             {
-                return Ok(new JwtService(_configuration).GenerateToken(
-                    user.UserId.ToString(),
-                    user.UserName,
-                    user.Active.ToString()));
+                var user = _context.Users.Where(u => u.UserName == login.UserName && u.Password == login.Password).FirstOrDefault();
+                if (user != null)
+                {
+                    return Ok(new JwtService(_configuration).GenerateToken(
+                        user.UserId.ToString(),
+                        user.UserName,
+                        user.Active.ToString()));
+                }
+                return Ok("Failure");
             }
-            return Ok("Failure");
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
         [HttpPut("updateUser")]
         public IActionResult UpdateUser(UpdatePassword updatePassword)
         {
-            var users = _context.Users.Where(u => u.UserName == updatePassword.UserName && u.Password == updatePassword.Password).FirstOrDefault();
-            if (users == null)
+            try
             {
-                return Ok("EnterCorrectUserNameOrPassword");
-            }
-            else
-            {
+                var users = _context.Users.Where(u => u.UserName == updatePassword.UserName && u.Password == updatePassword.Password).FirstOrDefault();
+                if (users == null)
+                {
+                    return Ok("EnterCorrectUserNameOrPassword");
+                }
                 users.Password = updatePassword.NewPassword;
+                _context.Update(users);
+                _context.SaveChanges();
+                return Ok("Success");
             }
-            _context.Update(users);
-            _context.SaveChanges();
-            return Ok("Success");
+            catch (Exception ex)
+            {
+                 return BadRequest(ex.Message);
+            }
         }
     }
 }

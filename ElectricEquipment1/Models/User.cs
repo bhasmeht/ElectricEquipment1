@@ -11,6 +11,7 @@ namespace ElectronicEquipment.Models
         [Required(ErrorMessage ="Please Enter Password")]
         [MinLength(8,ErrorMessage ="Length of Password must be atleast 8 character long")]
         public string Password { get; set; }
+        [Required]
         public bool Active { get; set; }
     }
 }

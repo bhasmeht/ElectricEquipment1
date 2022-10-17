@@ -23,49 +23,78 @@ namespace ElectronicEquipment.Controllers
             _context = context;
         }
 
-        [HttpGet("getequipmentcategory")]
+        [HttpGet("getEquipmentCategory")]
         public IActionResult Get()
         {
-            return Ok(_context.EquipmentCategories.ToList());
+            try
+            {
+                return Ok(_context.EquipmentCategories.ToList());
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            
         }
 
         [HttpPost("addEquipmentCategory")]
         public IActionResult Add(EquipmentCategory equipmentCategory)
         {
-            if (_context.EquipmentCategories.Where(u => u.EquipmentCategoryName == equipmentCategory.EquipmentCategoryName).FirstOrDefault() != null)
+            try
             {
-                return Ok("Exist");
+                if (_context.EquipmentCategories.Where(u => u.EquipmentCategoryName == equipmentCategory.EquipmentCategoryName).FirstOrDefault() != null)
+                {
+                    return Ok("Exist");
+                }
+                _context.EquipmentCategories.Add(equipmentCategory);
+                _context.SaveChanges();
+                return Ok("Success");
             }
-            _context.EquipmentCategories.Add(equipmentCategory);
-            _context.SaveChanges();
-            return Ok("Success");
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpPut("updateEquipmentCategory")]
         public IActionResult UpdateEquipmentCategory(EquipmentCategory equipmentCategory)
         {
-            var equipmentCategories = _context.EquipmentCategories.Where(u => u.EquipmentCategoryId == equipmentCategory.EquipmentCategoryId).FirstOrDefault();
-            if (equipmentCategories == null)
+            try
             {
-                return Ok("NotAvailable");
+                var equipmentCategories = _context.EquipmentCategories.Where(u => u.EquipmentCategoryId == equipmentCategory.EquipmentCategoryId).FirstOrDefault();
+                if (equipmentCategories == null)
+                {
+                    return Ok("NotAvailable");
+                }
+                equipmentCategories.EquipmentCategoryName = equipmentCategory.EquipmentCategoryName;
+                _context.Update(equipmentCategories);
+                _context.SaveChanges();
+                return Ok("Success");
             }
-            equipmentCategories.EquipmentCategoryName = equipmentCategory.EquipmentCategoryName;
-            _context.Update(equipmentCategories);
-            _context.SaveChanges();
-            return Ok("Success");
+            catch(Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpDelete("deleteEquipmentCategory/{id}")]
         public IActionResult DeleteEquipmentCategory(int id)
         {
-            var equipmentCategories = _context.EquipmentCategories.Where(u => u.EquipmentCategoryId == id).FirstOrDefault();
-            if (equipmentCategories == null)
+            try
             {
-                return Ok("NotAvailable");
+                var equipmentCategories = _context.EquipmentCategories.Where(u => u.EquipmentCategoryId == id).FirstOrDefault();
+                if (equipmentCategories == null)
+                {
+                    return Ok("NotAvailable");
+                }
+                _context.EquipmentCategories.Remove(equipmentCategories);
+                _context.SaveChanges();
+                return Ok("Success");
             }
-            _context.EquipmentCategories.Remove(equipmentCategories);
-            _context.SaveChanges();
-            return Ok("Success");
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
     }
 }
