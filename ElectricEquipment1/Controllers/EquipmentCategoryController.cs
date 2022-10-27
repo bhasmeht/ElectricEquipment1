@@ -20,7 +20,14 @@ namespace ElectronicEquipment.Controllers
         public EquipmentCategoryController(IConfiguration configuration, UserContext context)
         {
             _configuration = configuration;
-            _context = context;
+            if (context == null)
+            {
+                throw new ArgumentNullException("context is null");
+            }
+            else
+            {
+                _context = context;
+            }
         }
 
         [HttpGet("getEquipmentCategory")]

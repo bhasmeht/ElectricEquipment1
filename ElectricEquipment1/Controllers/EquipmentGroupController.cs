@@ -21,7 +21,14 @@ namespace ElectronicEquipment.Controllers
         public EquipmentGroupController(IConfiguration configuration, UserContext context)
         {
             _configuration = configuration;
-            _context = context;
+            if (context == null)
+            {
+                throw new ArgumentNullException("context is null");
+            }
+            else
+            {
+                _context = context;
+            }
         }
         [HttpGet("getEquipmentCategoryByGroupId/{id}")]
         public IActionResult GetequipmentGroupbyId(int id)

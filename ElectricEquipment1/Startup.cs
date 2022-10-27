@@ -31,20 +31,18 @@ namespace ElectricEquipment1
         {
             services.AddCors(options =>
             {
-
                 options.AddPolicy(name: "AllowOrigin", builder =>
                 {
                     builder.WithOrigins("http://localhost:4200").AllowAnyHeader().AllowAnyMethod();
                 });
             });
-
             services.AddDbContext<UserContext>(options => options.UseSqlServer(Configuration.GetConnectionString("Database")));
             services.AddControllers().AddNewtonsoftJson();
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(x =>
             {
                 x.TokenValidationParameters = new TokenValidationParameters
                 {
-                    ValidateIssuer = true, //Token generator
+                    ValidateIssuer = true, 
                     ValidateAudience = true,
                     ValidateLifetime = true,
                     ValidateIssuerSigningKey = true,
