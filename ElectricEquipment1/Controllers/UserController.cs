@@ -1,8 +1,6 @@
 ﻿using ElectronicEquipment.Models;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
-using System.Data.SqlClient;
 using System.Data;
 using Microsoft.AspNetCore.Cors;
 using System;
@@ -51,9 +49,6 @@ namespace ElectronicEquipment.Controllers
                 {
                     return Ok(null);
                 }
-               
-                
-                
             }
             catch (Exception ex)
             {
@@ -77,9 +72,8 @@ namespace ElectronicEquipment.Controllers
                     }
                     else
                     {
-                        return Ok(null);
+                        return Ok("NotActive");
                     }
-                    
                }
                 return Ok("Failure");
             }

@@ -4,7 +4,7 @@
     <DebuggerFlavor>ProjectDebugger</DebuggerFlavor>
   </PropertyGroup>
   <PropertyGroup>
-    <ActiveDebugProfile>Docker</ActiveDebugProfile>
+    <ActiveDebugProfile>ElectricEquipment1</ActiveDebugProfile>
     <NameOfLastUsedPublishProfile>C:\Users\bhasmeht\source\repos\ElectricEquipment1\ElectricEquipment1\Properties\PublishProfiles\FolderProfile1.pubxml</NameOfLastUsedPublishProfile>
   </PropertyGroup>
 </Project>
