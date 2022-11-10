@@ -28,6 +28,7 @@ namespace ElectronicEquipment.Controllers
                 _context = context;
             }
         }
+
         [AllowAnonymous]
         [HttpPost("addUser")]
         public IActionResult Add(User user)
@@ -38,17 +39,10 @@ namespace ElectronicEquipment.Controllers
                 {
                     return Ok("Exist");
                 }
-                if(user.Active==true)
-                {
-                    var userToken = new JwtService(_configuration).GenerateToken(user.UserId.ToString(), user.UserName);
-                    _context.Users.Add(user);
-                    _context.SaveChanges();
-                    return Ok(userToken);
-                }
-                else
-                {
-                    return Ok(null);
-                }
+                var userToken = new JwtService(_configuration).GenerateToken(user.UserId.ToString(), user.UserName);
+                _context.Users.Add(user);
+                _context.SaveChanges();
+                return Ok(userToken);
             }
             catch (Exception ex)
             {
