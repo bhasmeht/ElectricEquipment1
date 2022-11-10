@@ -2,19 +2,13 @@ using ElectronicEquipment.Models;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace ElectricEquipment1
 {
@@ -31,20 +25,18 @@ namespace ElectricEquipment1
         {
             services.AddCors(options =>
             {
-
                 options.AddPolicy(name: "AllowOrigin", builder =>
                 {
-                    builder.WithOrigins("http://localhost:4200").AllowAnyHeader().AllowAnyMethod();
+                    builder.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod();
                 });
             });
-
             services.AddDbContext<UserContext>(options => options.UseSqlServer(Configuration.GetConnectionString("Database")));
             services.AddControllers().AddNewtonsoftJson();
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(x =>
             {
                 x.TokenValidationParameters = new TokenValidationParameters
                 {
-                    ValidateIssuer = true, //Token generator
+                    ValidateIssuer = true, 
                     ValidateAudience = true,
                     ValidateLifetime = true,
                     ValidateIssuerSigningKey = true,

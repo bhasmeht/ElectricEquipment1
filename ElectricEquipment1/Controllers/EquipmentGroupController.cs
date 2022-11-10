@@ -1,12 +1,9 @@
 ﻿using ElectronicEquipment.Models;
 using Microsoft.AspNetCore.Cors;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using System;
-using System.Collections.Generic;
 using System.Data;
-using System.Data.SqlClient;
 using System.Linq;
 
 namespace ElectronicEquipment.Controllers
@@ -21,7 +18,14 @@ namespace ElectronicEquipment.Controllers
         public EquipmentGroupController(IConfiguration configuration, UserContext context)
         {
             _configuration = configuration;
-            _context = context;
+            if (context == null)
+            {
+                throw new ArgumentNullException("context is null");
+            }
+            else
+            {
+                _context = context;
+            }
         }
         [HttpGet("getEquipmentCategoryByGroupId/{id}")]
         public IActionResult GetequipmentGroupbyId(int id)
@@ -62,12 +66,11 @@ namespace ElectronicEquipment.Controllers
         {
             try
             {
-                var equipmentGroups = _context.EquipmentGroups.Where(u => u.EquipmentGroupId == equipmentGroup.EquipmentGroupId).FirstOrDefault();
+                var equipmentGroups = _context.EquipmentGroups.Where(u => u.EquipmentGroupName == equipmentGroup.EquipmentGroupName).FirstOrDefault();
                 if (equipmentGroups == null)
                 {
                     return Ok("NotAvailable");
                 }
-                equipmentGroups.EquipmentGroupName = equipmentGroup.EquipmentGroupName;
                 equipmentGroups.EquipmentCategoryId = equipmentGroup.EquipmentCategoryId;
                 _context.Update(equipmentGroups);
                 _context.SaveChanges();

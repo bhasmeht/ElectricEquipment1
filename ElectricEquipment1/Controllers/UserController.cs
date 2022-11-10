@@ -1,8 +1,6 @@
 ﻿using ElectronicEquipment.Models;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
-using System.Data.SqlClient;
 using System.Data;
 using Microsoft.AspNetCore.Cors;
 using System;
@@ -21,8 +19,16 @@ namespace ElectronicEquipment.Controllers
         public UserController(IConfiguration configuration,UserContext context)
         {
             _configuration = configuration;
-            _context = context;
+            if(context==null)
+            {
+                throw new ArgumentNullException("context is null");
+            }
+            else
+            {
+                _context = context;
+            }
         }
+
         [AllowAnonymous]
         [HttpPost("addUser")]
         public IActionResult Add(User user)
@@ -33,7 +39,7 @@ namespace ElectronicEquipment.Controllers
                 {
                     return Ok("Exist");
                 }
-                var userToken = new JwtService(_configuration).GenerateToken(user.UserId.ToString(), user.UserName, user.Active.ToString());
+                var userToken = new JwtService(_configuration).GenerateToken(user.UserId.ToString(), user.UserName);
                 _context.Users.Add(user);
                 _context.SaveChanges();
                 return Ok(userToken);
@@ -49,14 +55,20 @@ namespace ElectronicEquipment.Controllers
         {
             try
             {
-                var user = _context.Users.Where(u => u.UserName == login.UserName && u.Password == login.Password).FirstOrDefault();
-                if (user != null)
-                {
-                    return Ok(new JwtService(_configuration).GenerateToken(
-                        user.UserId.ToString(),
-                        user.UserName,
-                        user.Active.ToString()));
-                }
+               var user = _context.Users.Where(u => u.UserName == login.UserName && u.Password == login.Password).FirstOrDefault();
+               if (user != null)
+               {
+                    if(user.Active==true)
+                    {
+                        return Ok(new JwtService(_configuration).GenerateToken(
+                                              user.UserId.ToString(),
+                                              user.UserName));
+                    }
+                    else
+                    {
+                        return Ok("NotActive");
+                    }
+               }
                 return Ok("Failure");
             }
             catch (Exception ex)

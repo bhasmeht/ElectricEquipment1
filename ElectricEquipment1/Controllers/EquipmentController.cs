@@ -1,11 +1,9 @@
 ﻿using ElectronicEquipment.Models;
 using Microsoft.AspNetCore.Cors;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Data;
-using System.Data.SqlClient;
 using System.Linq;
 
 namespace ElectronicEquipment.Controllers
@@ -20,7 +18,14 @@ namespace ElectronicEquipment.Controllers
         public EquipmentController(IConfiguration configuration, UserContext context)
         {
             _configuration = configuration;
-            _context = context;
+            if (context == null)
+            {
+                throw new ArgumentNullException("context is null");
+            }
+            else
+            {
+                _context = context;
+            }
         }
 
         [HttpGet("getEquipment")]
